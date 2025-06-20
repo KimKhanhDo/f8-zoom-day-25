@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Table Checkbox UI</title>
+        <style>
+            body {
+                background: #f5f5f5;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                font-family: system-ui, sans-serif;
+            }
+
+            .table-card {
+                margin-top: 36px;
+                width: 880px;
+                background: #f5f5f5;
+                border-radius: 14px;
+                box-shadow: 0 2px 10px #0001;
+                overflow: hidden;
+                border: none;
+            }
+
+            .selected-header {
+                background: #9cd226b5;
+                color: #232222;
+                font-size: 1.5em;
+                font-weight: 500;
+                padding: 26px 32px 14px 32px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-top-left-radius: 14px;
+                border-top-right-radius: 14px;
+                letter-spacing: -1px;
+                line-height: 1.1;
+            }
+
+            .selected-header .delete {
+                cursor: pointer;
+                font-size: 2em;
+                opacity: 0.75;
+                transition: opacity 0.2s;
+                margin-left: 20px;
+            }
+
+            .selected-header .delete:hover {
+                opacity: 1;
+            }
+
+            .delete {
+                display: flex;
+                align-items: center;
+                height: 1em;
+            }
+
+            .bin {
+                width: 32px;
+                height: 32px;
+                object-fit: contain;
+                vertical-align: middle;
+                filter: grayscale(0.7);
+            }
+
+            .data-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                background: #f5f5f5;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 18px 22px 18px 30px;
+                text-align: left;
+                font-size: 1.1em;
+                font-weight: 400;
+                vertical-align: middle;
+                background: #ffffffcc;
+            }
+
+            .data-table th {
+                color: #444;
+                font-weight: 700;
+                font-size: 1.2em;
+                background: #f5f5f5;
+            }
+
+            .checkbox-cell {
+                width: 50px;
+                text-align: center;
+            }
+
+            .data-table tr {
+                border-bottom: 2px solid #e5e5e5;
+            }
+
+            .data-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            /* Hide checkbox by default */
+            .custom-checkbox input[type='checkbox'] {
+                opacity: 0;
+                width: 26px;
+                height: 26px;
+                margin: 0;
+                position: absolute;
+                left: 0;
+                top: 0;
+                cursor: pointer;
+                z-index: 2;
+                outline: none;
+                box-shadow: none;
+            }
+
+            /* checkbox custom */
+            .custom-checkbox {
+                position: relative;
+                display: inline-block;
+                width: 26px;
+                height: 26px;
+                vertical-align: middle;
+            }
+
+            .custom-checkbox .checkmark {
+                width: 26px;
+                height: 26px;
+                border-radius: 2px;
+                background: #d3d6c7;
+                border: 2px solid transparent;
+                box-sizing: border-box;
+                display: inline-block;
+                position: relative;
+                transition: background 0.15s, border 0.15s;
+            }
+
+            .custom-checkbox input[type='checkbox']:checked + .checkmark {
+                background: #b4df6a;
+            }
+
+            /* ====== CSS the check tick/ indeterminate ====== */
+
+            /* Check tick hide by default */
+            .custom-checkbox .checkmark::after {
+                content: '';
+                display: none;
+                position: absolute;
+            }
+
+            /* When checkbox checked, check tick display */
+            .custom-checkbox
+                input[type='checkbox']:checked
+                + .checkmark::after {
+                display: block;
+                left: 6px;
+                top: 0px;
+                width: 8px;
+                height: 14px;
+                border: solid #3c3939;
+                border-width: 0 2.5px 2.5px 0;
+                border-radius: 1.5px;
+                transform: rotate(42deg);
+            }
+
+            /* indeterminate mood -> When indeterminate is added, check tick is override */
+            .custom-checkbox .checkmark.indeterminate::after {
+                display: block;
+                content: '';
+                position: absolute;
+                left: 3px;
+                top: 10px;
+                width: 16px;
+                height: 3px;
+                border-radius: 2px;
+                background: #3c3939;
+            }
+
+            /* When indeterminate -> NO tick */
+            .custom-checkbox
+                input[type='checkbox']:checked
+                + .checkmark.indeterminate::after {
+                display: none;
+            }
+            .custom-checkbox .indeterminate {
+                background: #e4e7d8;
+            }
+
+            /* Responsive */
+            @media (max-width: 900px) {
+                .table-card {
+                    width: 99vw;
+                    min-width: 0;
+                }
+                .data-table {
+                    min-width: 300px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="table-card">
+            <!-- Header with selected count & delete -->
+            <div class="selected-header">
+                <span class="selected-count">0 selected</span>
+                <span
+                    class="delete"
+                    title="Delete"
+                >
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/1214/1214428.png"
+                        class="bin"
+                        alt="delete"
+                    />
+                </span>
+            </div>
+            <!-- Table -->
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    id="main-checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </th>
+                        <th style="font-weight: 700">Dessert (1 serve)</th>
+                        <th style="font-weight: 700">Calories</th>
+                        <th>Fat (g)</th>
+                        <th>Carbs (g)</th>
+                        <th>Protein (g)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Row 1 -->
+                    <tr>
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>Frozen yoghurt</td>
+                        <td>159</td>
+                        <td>6</td>
+                        <td>26</td>
+                        <td>4</td>
+                    </tr>
+                    <!-- Row 2 -->
+                    <tr>
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>Ice cream sandwich</td>
+                        <td>237</td>
+                        <td>9</td>
+                        <td>37</td>
+                        <td>4.3</td>
+                    </tr>
+                    <!-- Row 3 -->
+                    <tr>
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>Eclair</td>
+                        <td>262</td>
+                        <td>16</td>
+                        <td>26</td>
+                        <td>6</td>
+                    </tr>
+                    <!-- Row 4 -->
+                    <tr>
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>Cupcake</td>
+                        <td>305</td>
+                        <td>3.7</td>
+                        <td>67</td>
+                        <td>4.3</td>
+                    </tr>
+                    <!-- Row 5 -->
+                    <tr>
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>Gingerbread</td>
+                        <td>356</td>
+                        <td>16</td>
+                        <td>49</td>
+                        <td>3.9</td>
+                    </tr>
+                    <!-- Row 6 -->
+                    <tr>
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>Overnight Oat</td>
+                        <td>250</td>
+                        <td>9.5</td>
+                        <td>10</td>
+                        <td>25</td>
+                    </tr>
+                    <!-- Row 7 -->
+                    <tr>
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>Matcha Cheesecake</td>
+                        <td>410</td>
+                        <td>27</td>
+                        <td>36</td>
+                        <td>7</td>
+                    </tr>
+                    <!-- Row 8 -->
+                    <tr>
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>Tiramisu</td>
+                        <td>389</td>
+                        <td>18</td>
+                        <td>53</td>
+                        <td>5</td>
+                    </tr>
+                    <!-- Row 9 -->
+                    <tr>
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td>Lemon Tart</td>
+                        <td>320</td>
+                        <td>14</td>
+                        <td>44</td>
+                        <td>4.2</td>
+                    </tr>
+                    <!-- Row 10 -->
+                    <tr>
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox js-checkbox"
+                                />
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                        <td style="white-space: nowrap">Mango Sticky Rice</td>
+                        <td>250</td>
+                        <td>4.5</td>
+                        <td>52</td>
+                        <td>3.5</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script src="./check-all.js"></script>
+    </body>
+</html>
