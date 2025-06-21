@@ -30,7 +30,6 @@
             }
 
             body {
-                display: flex;
                 font-family: 'Poppins', sans-serif;
             }
 
@@ -39,9 +38,19 @@
                 max-width: 720px;
             }
 
+            .tab-block {
+                margin: 48px auto 0;
+                max-width: 820px;
+                background: #fff;
+                border-radius: 16px;
+                box-shadow: 0 2px 16px #0001;
+                padding: 28px 0 42px 0;
+            }
+
             .tabs {
                 display: flex;
                 position: relative;
+                justify-content: center;
             }
 
             .tabs .line {
@@ -78,6 +87,8 @@
                 width: 32px;
                 position: relative;
                 top: 2px;
+                display: block;
+                margin: 0 auto 8px;
             }
 
             .tab-item:hover {
@@ -88,15 +99,21 @@
 
             .tab-item.active {
                 opacity: 1;
+                color: #c23564;
+                border-bottom: 5px solid #c23564;
+                background: #fff;
             }
 
             .tab-content {
-                padding: 28px 0;
+                padding: 28px 36px 0 36px;
+                min-height: 200px;
             }
 
             .tab-panel {
                 color: #333;
                 display: none;
+                min-height: 120px;
+                background: #fff;
             }
 
             .tab-panel.active {
@@ -106,12 +123,14 @@
             .tab-panel h2 {
                 font-size: 24px;
                 margin-bottom: 8px;
+                color: #232323;
             }
         </style>
     </head>
 
     <body>
-        <div>
+        <!-- Block 1 -->
+        <div class="tab-block">
             <!-- Tab items -->
             <div
                 id="tabs"
@@ -154,6 +173,87 @@
                     </p>
                 </div>
                 <div class="tab-panel">
+                    <h2>React</h2>
+                    <p>
+                        React makes it painless to create interactive UIs.
+                        Design simple views for each state in your application,
+                        and React will efficiently update and render just the
+                        right components when your data changes.
+                    </p>
+                </div>
+                <div class="tab-panel">
+                    <h2>Angular</h2>
+                    <p>
+                        Angular is an application design framework and
+                        development platform for creating efficient and
+                        sophisticated single-page apps.
+                    </p>
+                </div>
+                <div class="tab-panel">
+                    <h2>Ember</h2>
+                    <p>
+                        Ember.js is a productive, battle-tested JavaScript
+                        framework for building modern web applications. It
+                        includes everything you need to build rich UIs that work
+                        on any device.
+                    </p>
+                </div>
+                <div class="tab-panel">
+                    <h2>Vue.js</h2>
+                    <p>
+                        Vue (pronounced /vjuː/, like view) is a progressive
+                        framework for building user interfaces. Unlike other
+                        monolithic frameworks, Vue is designed from the ground
+                        up to be incrementally adoptable.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Block 2 -->
+        <div class="tab-block">
+            <!-- Tab items -->
+            <div
+                id="tabs"
+                class="tabs"
+            >
+                <div class="tab-item">
+                    <i class="tab-icon fas fa-code"></i>
+                    JavaScript
+                </div>
+                <div class="tab-item active">
+                    <i class="tab-icon fab fa-react"></i>
+                    React
+                </div>
+                <div class="tab-item">
+                    <i class="tab-icon fas fa-cog"></i>
+                    Angular
+                </div>
+                <div class="tab-item">
+                    <i class="tab-icon fas fa-plus-circle"></i>
+                    Ember
+                </div>
+                <div class="tab-item">
+                    <i class="tab-icon fas fa-pen-nib"></i>
+                    Vue.JS
+                </div>
+                <div class="line"></div>
+            </div>
+
+            <!-- Tab content -->
+            <div class="tab-content">
+                <div class="tab-panel">
+                    <h2>JavaScript</h2>
+                    <p>
+                        JavaScript (JS) is a high-level, interpreted (or
+                        just-in-time compiled) programming language that is a
+                        core technology of the World Wide Web, alongside HTML
+                        and CSS. It is primarily known as the scripting language
+                        for web pages, enabling dynamic and interactive content
+                        within web browsers.
+                    </p>
+                </div>
+                <div class="tab-panel active">
                     <h2>React</h2>
                     <p>
                         React makes it painless to create interactive UIs.

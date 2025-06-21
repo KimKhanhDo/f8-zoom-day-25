@@ -1,26 +1,56 @@
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
-
-const tabs = $('#tabs');
-const tabItems = $$('.tab-item');
-const tabPanels = $$('.tab-panel');
+let activeBlock = null;
 
 initializeApp();
 
 function initializeApp() {
-    if (tabItems.length && tabPanels.length) {
-        tabItems.forEach((tab, index) => (tab.dataset.index = index));
-        tabPanels.forEach((tab, index) => (tab.dataset.index = index));
+    const tabBlocks = $$('.tab-block');
 
-        tabItems[0].classList.add('active');
-        tabPanels[0].classList.add('active');
+    tabBlocks.forEach((block) => {
+        const tabs = block.querySelector('.tabs');
+        const tabItems = block.querySelectorAll('.tab-item');
+        const tabPanels = block.querySelectorAll('.tab-panel');
 
-        tabs.addEventListener('click', handleClickAction);
-        document.addEventListener('keydown', handleKeyDown);
-    }
+        if (tabItems.length && tabPanels.length) {
+            tabItems.forEach((tab, index) => (tab.dataset.index = index));
+            tabPanels.forEach((tab, index) => (tab.dataset.index = index));
+
+            let defaultIndex = Array.from(tabItems).findIndex((tab) =>
+                tab.classList.contains('active')
+            );
+
+            if (defaultIndex === -1) defaultIndex = 0;
+
+            resetAndUpdateTabs(tabItems, tabPanels, defaultIndex);
+
+            tabs.addEventListener('click', handleClickAction);
+            document.addEventListener('keydown', handleKeyDown);
+        }
+    });
+}
+
+function handleClickAction(e) {
+    const tabItem = e.target.closest('.tab-item');
+    const block = tabItem.closest('.tab-block');
+    if (!tabItem || !block) return;
+
+    const tabItems = block.querySelectorAll('.tab-item');
+    const tabPanels = block.querySelectorAll('.tab-panel');
+    const index = +tabItem.dataset.index;
+
+    resetAndUpdateTabs(tabItems, tabPanels, index);
+
+    // Confirm this is current active block
+    activeBlock = block;
 }
 
 function handleKeyDown(e) {
+    if (!activeBlock) return;
+
+    const tabItems = activeBlock.querySelectorAll('.tab-item');
+    const tabPanels = activeBlock.querySelectorAll('.tab-panel');
+
     const keyNumber = +(e.key - 1);
 
     if (
@@ -30,33 +60,13 @@ function handleKeyDown(e) {
     )
         return;
 
-    resetAndUpdateNewTabs(keyNumber);
+    resetAndUpdateTabs(tabItems, tabPanels, keyNumber);
 }
 
-function handleClickAction(e) {
-    const tabItem = e.target.closest('.tab-item');
-    if (!tabItem) return;
-
-    const index = +tabItem.dataset.index;
-
-    resetAndUpdateNewTabs(index);
-}
-
-function resetTabsAndPanels() {
+function resetAndUpdateTabs(tabItems, tabPanels, index) {
     tabItems.forEach((tab) => tab.classList.remove('active'));
-    tabPanels.forEach((tab) => tab.classList.remove('active'));
-}
-
-function activateTab(index) {
-    const tabPanel = $(`.tab-panel[data-index="${index}"]`);
-
-    if (!tabItems[index] || !tabPanel) return;
+    tabPanels.forEach((panel) => panel.classList.remove('active'));
 
     tabItems[index].classList.add('active');
-    tabPanel.classList.add('active');
-}
-
-function resetAndUpdateNewTabs(index) {
-    resetTabsAndPanels();
-    activateTab(index);
+    tabPanels[index].classList.add('active');
 }
