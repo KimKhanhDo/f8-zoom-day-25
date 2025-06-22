@@ -9,8 +9,7 @@ function initializeApp() {
 
     tabBlocks.forEach((block) => {
         const tabs = block.querySelector('.tabs');
-        const tabItems = block.querySelectorAll('.tab-item');
-        const tabPanels = block.querySelectorAll('.tab-panel');
+        const { tabItems, tabPanels } = getTabsData(block);
 
         if (tabItems.length && tabPanels.length) {
             tabItems.forEach((tab, index) => (tab.dataset.index = index));
@@ -22,7 +21,7 @@ function initializeApp() {
 
             if (defaultIndex === -1) defaultIndex = 0;
 
-            resetAndUpdateTabs(tabItems, tabPanels, defaultIndex);
+            updateTabs(block, defaultIndex);
 
             tabs.addEventListener('click', handleClickAction);
             document.addEventListener('keydown', handleKeyDown);
@@ -30,27 +29,17 @@ function initializeApp() {
     });
 }
 
-function handleClickAction(e) {
-    const tabItem = e.target.closest('.tab-item');
-    const block = tabItem.closest('.tab-block');
-    if (!tabItem || !block) return;
-
-    const tabItems = block.querySelectorAll('.tab-item');
-    const tabPanels = block.querySelectorAll('.tab-panel');
-    const index = +tabItem.dataset.index;
-
-    resetAndUpdateTabs(tabItems, tabPanels, index);
-
-    // Confirm this is current active block
-    activeBlock = block;
+function getTabsData(block) {
+    return {
+        tabItems: block.querySelectorAll('.tab-item'),
+        tabPanels: block.querySelectorAll('.tab-panel'),
+    };
 }
 
 function handleKeyDown(e) {
     if (!activeBlock) return;
 
-    const tabItems = activeBlock.querySelectorAll('.tab-item');
-    const tabPanels = activeBlock.querySelectorAll('.tab-panel');
-
+    const { tabItems } = getTabsData(activeBlock);
     const keyNumber = +(e.key - 1);
 
     if (
@@ -60,10 +49,25 @@ function handleKeyDown(e) {
     )
         return;
 
-    resetAndUpdateTabs(tabItems, tabPanels, keyNumber);
+    updateTabs(activeBlock, keyNumber);
 }
 
-function resetAndUpdateTabs(tabItems, tabPanels, index) {
+function handleClickAction(e) {
+    const tabItem = e.target.closest('.tab-item');
+
+    // use "?."" to check if tabItem null -> error runtime & never reach "if (!tabItem || !block) return"
+    const block = tabItem?.closest('.tab-block');
+    if (!tabItem || !block) return;
+
+    const index = +tabItem.dataset.index;
+    updateTabs(block, index);
+    // Confirm this is current active block
+    activeBlock = block;
+}
+
+function updateTabs(block, index) {
+    const { tabItems, tabPanels } = getTabsData(block);
+
     tabItems.forEach((tab) => tab.classList.remove('active'));
     tabPanels.forEach((panel) => panel.classList.remove('active'));
 
